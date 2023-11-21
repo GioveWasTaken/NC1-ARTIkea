@@ -19,9 +19,7 @@ struct ContentView: View {
     let products: [Product] = [
         Product(name: "Chair", description: "A comfortable chair for your home.", imageName: "chair"),
         Product(name: "Table", description: "A stylish table for your dining room.", imageName: "table"),
-        Product(name: "Sofa", description: "A cozy sofa for your living space.", imageName: "sofa")
-        // Add more products as needed
-    ]
+        Product(name: "Sofa", description: "A cozy sofa for your living space.", imageName: "sofa")    ]
 
     var body: some View {
         NavigationView {
