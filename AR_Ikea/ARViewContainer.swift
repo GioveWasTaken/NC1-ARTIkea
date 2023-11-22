@@ -9,75 +9,59 @@
 import SwiftUI
 import ARKit
 
-struct ARViewContainer: UIViewControllerRepresentable {
+struct ARViewContainer: UIViewRepresentable {
     class Coordinator: NSObject, ARSCNViewDelegate {
+        var parent: ARViewContainer
+
+        init(parent: ARViewContainer) {
+            self.parent = parent
+        }
+
+        // Implement ARSCNViewDelegate methods as needed
     }
 
     func makeCoordinator() -> Coordinator {
-        return Coordinator()
+        return Coordinator(parent: self)
     }
 
-    func makeUIViewController(context: Context) -> UIViewController {
-        let viewController = UIViewController()
+    func makeUIView(context: Context) -> ARSCNView {
         let arView = ARSCNView()
-
-        //CAMERA
-        switch AVCaptureDevice.authorizationStatus(for: .video) {
-        case .authorized:
-            break
-        case .notDetermined:
-            AVCaptureDevice.requestAccess(for: .video) { granted in
-                if granted {
-                } else {
-                
-                }
-            }
-        default:
-            break
-        }
-
         arView.delegate = context.coordinator
 
+        // Create a scene
         let scene = SCNScene()
         arView.scene = scene
 
-        arView.autoenablesDefaultLighting = true
-
-        if let model = Bundle.main.url(forResource: "tv_retro", withExtension: "usdz") {
-            let modelNode = SCNReferenceNode(url: model)
-            modelNode?.load()
-
-         
-            modelNode?.position = SCNVector3(0, 0, -2)
-            scene.rootNode.addChildNode(modelNode!)
-        }
-
-        viewController.view = arView
-
-        return viewController
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-    }
-}
-
-struct ARViewDemo: View {
-    var body: some View {
-        NavigationView {
-            VStack {
-                Text("")
-                    .font(.largeTitle)
-                    .padding()
-
-                ARViewContainer()
-                    .edgesIgnoringSafeArea(.all)
+        // Add AR content here, e.g., a 3D model
+        let tvNode = SCNNode()
+        if let tvScene = SCNScene(named: "tv_retro.usdz") {
+            for child in tvScene.rootNode.childNodes {
+                tvNode.addChildNode(child)
             }
         }
+
+        // Set the scale of the tvNode
+        let scale: Float = 0.1 // Adjust this value as needed
+        tvNode.scale = SCNVector3(scale, scale, scale)
+
+        scene.rootNode.addChildNode(tvNode)
+
+        // Configure AR session options
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.planeDetection = .horizontal
+        arView.session.run(configuration)
+
+        return arView
+    }
+
+    func updateUIView(_ uiView: ARSCNView, context: Context) {
+        // Update the view as needed
     }
 }
 
-struct ARViewDemo_Previews: PreviewProvider {
-    static var previews: some View {
-        ARViewDemo()
+struct ARQuickLookARView: View {
+    var body: some View {
+        ARViewContainer()
+            .edgesIgnoringSafeArea(.all)
     }
 }
