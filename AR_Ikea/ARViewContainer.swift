@@ -5,7 +5,7 @@
 //  Created by Giovanni Bifulco on 16/11/23.
 //
 
-
+// i had to ask help to Felix, kudos to him!
 import SwiftUI
 import ARKit
 
@@ -17,7 +17,6 @@ struct ARViewContainer: UIViewRepresentable {
             self.parent = parent
         }
 
-        // Implement ARSCNViewDelegate methods as needed
     }
 
     func makeCoordinator() -> Coordinator {
@@ -32,16 +31,28 @@ struct ARViewContainer: UIViewRepresentable {
         let scene = SCNScene()
         arView.scene = scene
 
-        // Add AR content here, e.g., a 3D model
+        // select your AR thingy
         let tvNode = SCNNode()
         if let tvScene = SCNScene(named: "tv_retro.usdz") {
             for child in tvScene.rootNode.childNodes {
                 tvNode.addChildNode(child)
+                
+                // Add an ambient light
+                let ambientLightNode = SCNNode()
+                ambientLightNode.light = SCNLight()
+                ambientLightNode.light?.type = .ambient
+                ambientLightNode.light?.intensity = 1000 // Adjust intensity as needed
+                scene.rootNode.addChildNode(ambientLightNode)
+
+            
             }
         }
+        
+        
 
-        // Set the scale of the tvNode
-        let scale: Float = 0.1 // Adjust this value as needed
+        // Set the scale of the tvN
+        let scale: Float = 2
+        // Adjust this value as needed
         tvNode.scale = SCNVector3(scale, scale, scale)
 
         scene.rootNode.addChildNode(tvNode)

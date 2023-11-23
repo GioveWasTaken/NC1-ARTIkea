@@ -5,7 +5,7 @@
 //  Created by Giovanni Bifulco on 16/11/23.
 //
 
-// ContentView.swift
+// Interface
 import SwiftUI
 
 struct Product: Identifiable {
@@ -14,7 +14,7 @@ struct Product: Identifiable {
     let description: String
     let imageName: String
 }
-
+//list of items at the start.
 struct ContentView: View {
     let products: [Product] = [
         Product(name: "Chair", description: "A comfortable chair for your home.", imageName: "chair"),
@@ -30,11 +30,12 @@ struct ContentView: View {
                 }
                 .accessibility(label: Text("\(product.name): \(product.description)"))
             }
-            .navigationTitle("IKEA")
+            .navigationTitle("Objects List")
         }
     }
 }
 
+//interface pt.2
 struct ProductRow: View {
     let product: Product
 
@@ -92,6 +93,7 @@ struct ProductDetailView: View {
             }
             .accessibility(label: Text("View in AR Button"))
             Spacer()
+                .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
         }
         .navigationTitle(product.name)
     }
